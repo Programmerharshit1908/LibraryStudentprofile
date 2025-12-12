@@ -1,307 +1,476 @@
-  * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background-color: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            background: linear-gradient(135deg, #2c3e50, #4a6491);
-            color: white;
-            padding: 20px 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-radius: 0 0 10px 10px;
-            margin-bottom: 30px;
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .logo i {
-            font-size: 2.5rem;
-            color: #3498db;
-        }
-        
-        .logo h1 {
-            font-size: 1.8rem;
-        }
-        
-        .logo span {
-            color: #3498db;
-        }
-        
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 25px;
-        }
-        
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 8px 15px;
-            border-radius: 4px;
-            transition: all 0.3s;
-        }
-        
-        nav a:hover, nav a.active {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        .page {
-            display: none;
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
-        }
-        
-        .page.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #3498db;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
-        
-        input, select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-            transition: border 0.3s;
-        }
-        
-        input:focus, select:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-        
-        .btn {
-            display: inline-block;
-            background: linear-gradient(to right, #3498db, #2980b9);
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
-        }
-        
-        .btn-secondary {
-            background: linear-gradient(to right, #7f8c8d, #95a5a6);
-        }
-        
-        .btn-secondary:hover {
-            box-shadow: 0 5px 15px rgba(127, 140, 141, 0.3);
-        }
-        
-        .flex-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .form-container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .message {
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            display: none;
-        }
-        
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
-        .profile-card {
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-        
-        .profile-pic {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background-color: #ecf0f1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            color: #7f8c8d;
-            border: 5px solid #3498db;
-        }
-        
-        .profile-details {
-            flex: 1;
-            min-width: 300px;
-        }
-        
-        .detail-row {
-            display: flex;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .detail-label {
-            width: 150px;
-            font-weight: 600;
-            color: #555;
-        }
-        
-        .detail-value {
-            flex: 1;
-            color: #333;
-        }
-        
-        .books-list {
-            margin-top: 30px;
-        }
-        
-        .book-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            border-left: 4px solid #3498db;
-        }
-        
-        .book-title {
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        
-        .book-due {
-            color: #e74c3c;
-            font-weight: 500;
-        }
-        
-        .login-options {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
-        }
-        
-        .login-option {
-            text-align: center;
-            padding: 30px;
-            border-radius: 10px;
-            background-color: white;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            width: 250px;
-            transition: transform 0.3s;
-        }
-        
-        .login-option:hover {
-            transform: translateY(-5px);
-        }
-        
-        .login-option i {
-            font-size: 3rem;
-            color: #3498db;
-            margin-bottom: 15px;
-        }
-        
-        .login-option h3 {
-            margin-bottom: 15px;
-            color: #2c3e50;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #7f8c8d;
-            border-top: 1px solid #eee;
-            margin-top: 30px;
-        }
-        
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            nav ul {
-                gap: 10px;
-            }
-            
-            .profile-card {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .login-options {
-                flex-direction: column;
-                align-items: center;
-            }
-        }
+/* ==========================================================================
+   1. VARIABLES & THEME (Pastel Slate Palette)
+   ========================================================================== */
+:root {
+    /* Brand Colors */
+    --primary: #607d8b;       /* Slate Grey */
+    --primary-dark: #455a64;  /* Dark Slate */
+    --secondary: #90a4ae;     /* Light Slate */
+    --accent: #cfd8dc;        /* Very Light Grey */
+    
+    /* Backgrounds */
+    --bg-body: #f0f2f5;       /* Lightest Grey */
+    --bg-card: #ffffff;
+    --bg-input: #fafafa;
+
+    /* Text */
+    --text-main: #2c3e50;     /* Dark Blue-Grey */
+    --text-muted: #78909c;    /* Muted Grey */
+    --text-light: #b0bec5;    /* Very Light Text */
+    --white: #ffffff;
+
+    /* Status Colors */
+    --success: #66bb6a;       /* Pastel Green */
+    --error: #ef5350;         /* Pastel Red */
+    --warning: #ffa726;       /* Pastel Orange */
+
+    /* UI Properties */
+    --radius: 12px;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-md: 0 8px 16px rgba(0,0,0,0.08);
+    --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* ==========================================================================
+   2. RESET & GLOBAL
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font-main);
+}
+
+body {
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ==========================================================================
+   3. HEADER - (Specific Fix for your HTML)
+   ========================================================================== */
+header {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    color: var(--white);
+    padding: 20px 0;
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* GRID LAYOUT FOR LOGO 
+   This fixes the "messy" look of h1, h4, h5 and br tags 
+*/
+.logo {
+    display: grid;
+    /* Column 1: Icon, Column 2: Text */
+    grid-template-columns: auto 1fr;
+    /* Rows for Title, Director, Phone */
+    grid-template-rows: auto auto auto;
+    column-gap: 15px;
+    align-items: center;
+}
+
+/* Hide the <br> tags via CSS so they don't break the grid */
+.logo br {
+    display: none;
+}
+
+/* The Book Icon spans all 3 rows */
+.logo i {
+    grid-column: 1;
+    grid-row: 1 / span 3;
+    font-size: 2.8rem;
+    color: var(--accent);
+    opacity: 0.9;
+}
+
+/* Title */
+.logo h1 {
+    grid-column: 2;
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 2px;
+}
+
+.logo h1 span {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--accent);
+    margin-left: 8px;
+}
+
+/* Director Name */
+.logo h4 {
+    grid-column: 2;
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.logo h4 span {
+    font-size: 0.75rem;
+    opacity: 0.6;
+    margin-right: 5px;
+}
+
+/* Phone Number */
+.logo h5 {
+    grid-column: 2;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: monospace; /* Makes numbers look tabular/neat */
+    letter-spacing: 1px;
+}
+
+/* Navigation */
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 5px;
+    border-radius: 50px;
+}
+
+nav a {
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+nav a:hover, nav a.active {
+    background-color: var(--white);
+    color: var(--primary-dark);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* ==========================================================================
+   4. PAGES & LAYOUT
+   ========================================================================== */
+.page {
+    display: none;
+    background: var(--bg-card);
+    padding: 40px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 40px;
+    margin-top: 20px;
+    border: 1px solid rgba(0,0,0,0.02);
+    /* Float animation setup */
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.page.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+h2 {
+    color: var(--text-main);
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--bg-body);
+    font-size: 1.8rem;
+}
+
+h3 {
+    color: var(--primary);
+    margin-bottom: 15px;
+}
+
+/* ==========================================================================
+   5. LOGIN OPTIONS (Home Page)
+   ========================================================================== */
+.login-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.login-option {
+    background: var(--white);
+    border: 2px solid var(--bg-body);
+    padding: 30px;
+    border-radius: var(--radius);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.login-option:hover {
+    border-color: var(--primary);
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+}
+
+.login-option i {
+    font-size: 3rem;
+    color: var(--secondary);
+    margin-bottom: 20px;
+}
+
+.login-option h3 {
+    color: var(--text-main);
+}
+
+.login-option p {
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   6. FORMS
+   ========================================================================== */
+.form-container {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 0.9rem;
+}
+
+input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--bg-body);
+    background-color: var(--bg-input);
+    border-radius: 8px;
+    font-size: 1rem;
+    color: var(--text-main);
+    transition: all 0.3s;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background-color: var(--white);
+    box-shadow: 0 0 0 4px rgba(96, 125, 139, 0.1);
+}
+
+/* Buttons */
+.flex-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn {
+    display: inline-block;
+    background: var(--primary);
+    color: var(--white);
+    border: none;
+    padding: 12px 28px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s;
+    text-align: center;
+    flex: 1; /* Makes buttons equal width in flex containers */
+}
+
+.btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.btn-secondary {
+    background: var(--bg-body);
+    color: var(--text-main);
+}
+
+.btn-secondary:hover {
+    background: #e0e0e0;
+}
+
+/* ==========================================================================
+   7. PROFILE & JAVASCRIPT INJECTED CONTENT
+   ========================================================================== */
+.profile-card {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    background: linear-gradient(to right, var(--bg-card), var(--bg-body));
+    padding: 30px;
+    border-radius: var(--radius);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.profile-pic {
+    width: 120px;
+    height: 120px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 3.5rem;
+    border: 4px solid white;
+    box-shadow: var(--shadow-sm);
+}
+
+.profile-details {
+    flex: 1;
+}
+
+.detail-row {
+    display: flex;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.detail-label {
+    width: 150px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.detail-value {
+    color: var(--text-main);
+    font-weight: 500;
+}
+
+/* Book List Styles */
+.books-list {
+    margin-top: 40px;
+}
+
+.book-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s;
+}
+
+.book-item:hover {
+    transform: translateX(5px);
+}
+
+.book-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-main);
+}
+
+.book-due {
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Messages */
+.message {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 500;
+    display: none;
+}
+
+.success { background-color: var(--success); color: white; }
+.error { background-color: var(--error); color: white; }
+
+/* ==========================================================================
+   8. FOOTER
+   ========================================================================== */
+footer {
+    margin-top: auto; /* Pushes footer to bottom */
+    background: var(--primary-dark);
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    padding: 30px 0;
+    font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   9. RESPONSIVE
+   ========================================================================== */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+
+    .logo {
+        /* Center grid on mobile */
+        justify-content: center;
+        text-align: left; /* Keep text aligned left relative to icon */
+    }
+
+    nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .profile-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .detail-row {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .detail-label {
+        width: 100%;
+        color: var(--primary);
+    }
+    
+    .book-item {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+}
