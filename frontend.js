@@ -1,378 +1,362 @@
+// ================== UTILITIES & UI HELPERS ==================
 
-  // ================== PAGE NAVIGATION ==================
-  // Nav links
-  document.querySelectorAll(".nav-link").forEach((link) => {
-    link.addEventListener("click", function (e) {
-      e.preventDefault();
-      const pageId = this.getAttribute("data-page");
-      showPage(pageId);
+// Helper to show loading state on buttons
+function setLoading(buttonId, isLoading, defaultText) {
+    const btn = document.getElementById(buttonId);
+    if (!btn) return;
 
-      // active class change
-      document
-        .querySelectorAll(".nav-link")
-        .forEach((nav) => nav.classList.remove("active"));
-      this.classList.add("active");
-    });
-  });
-
-  // Home buttons
-  document
-    .getElementById("goToRegister")
-    .addEventListener("click", () => showPage("register"));
-  document
-    .getElementById("goToLogin")
-    .addEventListener("click", () => showPage("login"));
-  document
-    .getElementById("goToLoginFromProfile")
-    .addEventListener("click", () => showPage("login"));
-  document
-    .getElementById("backFromRegister")
-    .addEventListener("click", () => showPage("home"));
-  document
-    .getElementById("backFromLogin")
-    .addEventListener("click", () => showPage("home"));
-
-  function showPage(pageId) {
-    // nav active
-    document
-      .querySelectorAll(".nav-link")
-      .forEach((nav) => nav.classList.remove("active"));
-    const navLink = document.querySelector(`[data-page="${pageId}"]`);
-    if (navLink) navLink.classList.add("active");
-
-    // pages show/hide
-    document.querySelectorAll(".page").forEach((page) => {
-      page.classList.remove("active");
-    });
-    document.getElementById(pageId).classList.add("active");
-
-    // profile page par aane pe profile reload karo
-    if (pageId === "profile") {
-      loadProfile();
+    if (isLoading) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Processing...`;
+        btn.style.opacity = "0.7";
+    } else {
+        btn.disabled = false;
+        btn.innerHTML = defaultText;
+        btn.style.opacity = "1";
     }
-  }
+}
 
-  // ================== REGISTRATION (SUPABASE) ==================
-  document
-    .getElementById("registrationForm")
-    .addEventListener("submit", async function (e) {
-      e.preventDefault();
+// Helper to show messages (Success/Error)
+function showMessage(elementId, message, type) {
+    const messageElement = document.getElementById(elementId);
+    if (!messageElement) return;
+    
+    // Icon based on type
+    const icon = type === 'success' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-exclamation-circle"></i>';
+    
+    messageElement.innerHTML = `${icon} ${message}`;
+    messageElement.className = `message ${type}`;
+    messageElement.style.display = "block"; // Changed from flex to block to match CSS
 
-      const fullName = document.getElementById("fullName").value;
-      const email = document.getElementById("email").value;
-      const phone = document.getElementById("phone").value;
-      // course / year fields abhi HTML me commented hain, isliye use nahi kar rahe
-      const password = document.getElementById("password").value;
-      const confirmPassword = document.getElementById("confirmPassword").value;
+    // Auto hide after 5 seconds
+    setTimeout(() => {
+        messageElement.style.display = "none";
+    }, 5000);
+}
 
-      if (password !== confirmPassword) {
+// ================== PAGE NAVIGATION ==================
+
+function showPage(pageId) {
+    // 1. Update Navigation Links
+    document.querySelectorAll(".nav-link").forEach((nav) => nav.classList.remove("active"));
+    
+    const activeLink = document.querySelector(`[data-page="${pageId}"]`);
+    if (activeLink) activeLink.classList.add("active");
+
+    // 2. Hide all pages & Show target page
+    document.querySelectorAll(".page").forEach((page) => {
+        page.classList.remove("active");
+        // Reset scroll position when switching
+        window.scrollTo(0, 0); 
+    });
+    
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) targetPage.classList.add("active");
+
+    // 3. Special Logic for Profile Page
+    if (pageId === "profile") {
+        loadProfile();
+    }
+}
+
+// Event Listeners for Navigation
+document.querySelectorAll(".nav-link").forEach((link) => {
+    link.addEventListener("click", function (e) {
+        e.preventDefault();
+        const pageId = this.getAttribute("data-page");
+        showPage(pageId);
+    });
+});
+
+// Button Event Listeners
+const navMap = {
+    "goToRegister": "register",
+    "goToLogin": "login",
+    "backFromRegister": "home",
+    "backFromLogin": "home"
+};
+
+for (const [btnId, pageId] of Object.entries(navMap)) {
+    const btn = document.getElementById(btnId);
+    if (btn) {
+        btn.addEventListener("click", () => showPage(pageId));
+    }
+}
+
+// ================== REGISTRATION LOGIC ==================
+
+document.getElementById("registrationForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const fullName = document.getElementById("fullName").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    if (password !== confirmPassword) {
         showMessage("registerMessage", "Passwords do not match!", "error");
         return;
-      }
+    }
 
-      try {
-        // 1) Supabase Auth Signup
-        const { data: signUpData, error: signUpError } =
-          await supabase.auth.signUp({
+    if (password.length < 6) {
+        showMessage("registerMessage", "Password must be at least 6 characters.", "error");
+        return;
+    }
+
+    setLoading("btnRegisterSubmit", true, "Register");
+
+    try {
+        // 1. Supabase Auth Signup
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
             email,
             password,
-          });
+            options: {
+                data: { full_name: fullName, phone: phone } // Store metadata
+            }
+        });
 
-        if (signUpError) {
-          showMessage("registerMessage", signUpError.message, "error");
-          return;
-        }
+        if (signUpError) throw signUpError;
 
         const user = signUpData.user;
 
-        // 2) students table me insert
-        const { error: insertError } = await supabase.from("students").insert([
-          {
-            id: user.id, // auth user id
-            full_name: fullName,
-            email: email,
-            phone: phone,
-            // course/year optional, null rehne do
-          },
-        ]);
+        if (user) {
+            // 2. Insert into 'students' table
+            const { error: insertError } = await supabase.from("students").insert([
+                {
+                    id: user.id,
+                    full_name: fullName,
+                    email: email,
+                    phone: phone,
+                },
+            ]);
 
-        if (insertError) {
-          showMessage("registerMessage", insertError.message, "error");
-          return;
+            if (insertError) throw insertError;
+
+            showMessage("registerMessage", "Registration Successful! Redirecting to login...", "success");
+            document.getElementById("registrationForm").reset();
+
+            setTimeout(() => {
+                showPage("login");
+            }, 2000);
         }
 
-        showMessage(
-          "registerMessage",
-          "Registration successful! Please login.",
-          "success"
-        );
-        document.getElementById("registrationForm").reset();
+    } catch (err) {
+        console.error("Registration Error:", err);
+        showMessage("registerMessage", err.message || "Registration failed. Try again.", "error");
+    } finally {
+        setLoading("btnRegisterSubmit", false, "Register");
+    }
+});
 
-        setTimeout(() => {
-          showPage("login");
-        }, 1000);
-      } catch (err) {
-        console.error(err);
-        showMessage(
-          "registerMessage",
-          "Something went wrong. Try again.",
-          "error"
-        );
-      }
-    });
+// ================== LOGIN LOGIC ==================
 
-  // ================== LOGIN (SUPABASE) ==================
-  document
-    .getElementById("loginForm")
-    .addEventListener("submit", async function (e) {
-      e.preventDefault();
+document.getElementById("loginForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
 
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
 
-      try {
+    setLoading("btnLoginSubmit", true, "Login");
+
+    try {
         const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
+            email,
+            password,
         });
 
-        if (error) {
-          showMessage("loginMessage", error.message, "error");
-          return;
-        }
+        if (error) throw error;
 
         const user = data.user;
 
-        // students table se profile nikaalna
+        // Fetch user profile from 'students' table
         const { data: student, error: profileError } = await supabase
-          .from("students")
-          .select("*")
-          .eq("id", user.id)
-          .single();
+            .from("students")
+            .select("*")
+            .eq("id", user.id)
+            .single();
 
         if (profileError || !student) {
-          showMessage(
-            "loginMessage",
-            "Login successful but profile not found.",
-            "error"
-          );
-          return;
+            throw new Error("Login successful, but student profile not found.");
         }
 
-        // localStorage me currentStudent store karo
+        // Store session
         localStorage.setItem("currentStudent", JSON.stringify(student));
-
-        showMessage("loginMessage", "Login successful!", "success");
+        
+        showMessage("loginMessage", "Login Successful!", "success");
+        document.getElementById("loginForm").reset();
 
         setTimeout(() => {
-          showPage("profile");
-          loadProfile();
-        }, 800);
-      } catch (err) {
-        console.error(err);
-        showMessage("loginMessage", "Something went wrong. Try again.", "error");
-      }
+            showPage("profile");
+        }, 1000);
 
-      document.getElementById("loginForm").reset();
-    });
+    } catch (err) {
+        console.error("Login Error:", err);
+        showMessage("loginMessage", err.message || "Invalid login credentials.", "error");
+    } finally {
+        setLoading("btnLoginSubmit", false, "Login");
+    }
+});
 
-  // ================== PROFILE LOAD (SUPABASE) ==================
-  async function loadProfile() {
+// ================== PROFILE & DATA LOADING ==================
+
+async function loadProfile() {
+    const contentDiv = document.getElementById("profileContent");
+    const logoutBtnTop = document.getElementById("logoutBtnTop");
+    
     let student = null;
 
-    // 1) localStorage se
-    const stored = localStorage.getItem("currentStudent");
-    if (stored) {
-      student = JSON.parse(stored);
-    }
+    // 1. Try Local Storage
+    try {
+        const stored = localStorage.getItem("currentStudent");
+        if (stored) student = JSON.parse(stored);
+    } catch (e) { console.error("Storage Error", e); }
 
-    // 2) agar localStorage empty hai to Supabase se current user le aao
+    // 2. Fallback to Supabase Session
     if (!student) {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user) {
-        const { data: dbStudent } = await supabase
-          .from("students")
-          .select("*")
-          .eq("id", user.id)
-          .single();
-        student = dbStudent;
-        if (student) {
-          localStorage.setItem("currentStudent", JSON.stringify(student));
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+            const { data: dbStudent } = await supabase
+                .from("students")
+                .select("*")
+                .eq("id", user.id)
+                .single();
+            student = dbStudent;
+            if (student) localStorage.setItem("currentStudent", JSON.stringify(student));
         }
-      }
     }
 
-    // agar abhi bhi student nahi mila
+    // 3. Not Logged In State
     if (!student) {
-      document.getElementById("profileContent").innerHTML = `
-        <div style="text-align: center; padding: 40px 0;">
-          <i class="fas fa-user-circle" style="font-size: 5rem; color: #bdc3c7;"></i>
-          <p style="margin-top: 20px; color: #7f8c8d;">Please login to view your profile</p>
-          <button class="btn" id="goToLoginFromProfile">Go to Login</button>
-        </div>
-      `;
-      document
-        .getElementById("goToLoginFromProfile")
-        .addEventListener("click", () => showPage("login"));
-      return;
+        if(logoutBtnTop) logoutBtnTop.style.display = 'none'; // Hide logout if not logged in
+        contentDiv.innerHTML = `
+            <div style="text-align: center; padding: 40px 0;">
+                <div style="font-size: 5rem; color: #cfd8dc; margin-bottom: 20px;">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3>Access Restricted</h3>
+                <p style="color: #78909c; margin-bottom: 30px;">Please login to view your student profile and book history.</p>
+                <button class="btn" id="goToLoginFromProfile">
+                    <i class="fas fa-sign-in-alt"></i> Go to Login
+                </button>
+            </div>
+        `;
+        document.getElementById("goToLoginFromProfile").addEventListener("click", () => showPage("login"));
+        return;
     }
 
-    // Sample borrowed books (abhi frontend se hi, DB se nahi)
+    // 4. Logged In State
+    if(logoutBtnTop) {
+        logoutBtnTop.style.display = 'inline-block';
+        logoutBtnTop.onclick = handleLogout;
+    }
+
+    // Mock Data for UI demonstration
     const sampleBooks = [
-      {
-        title: "Introduction to Algorithms",
-        author: "Thomas H. Cormen",
-        dueDate: "2025-12-15",
-        fine: 0,
-      },
-      {
-        title: "Clean Code",
-        author: "Robert C. Martin",
-        dueDate: "2025-12-10",
-        fine: 50,
-      },
-      {
-        title: "The Great Gatsby",
-        author: "F. Scott Fitzgerald",
-        dueDate: "2025-11-28",
-        fine: 120,
-      },
+        { title: "Introduction to Algorithms", author: "Thomas H. Cormen", dueDate: "15 Dec 2025", fine: 0 },
+        { title: "Clean Code", author: "Robert C. Martin", dueDate: "10 Dec 2025", fine: 50 },
+        { title: "The Great Gatsby", author: "F. Scott Fitzgerald", dueDate: "28 Nov 2025", fine: 120 },
     ];
 
     const profileHTML = `
-      <div class="profile-card">
-        <div class="profile-pic">
-          <i class="fas fa-user"></i>
+        <div class="profile-card">
+            <div class="profile-pic">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+
+            <div class="profile-details">
+                <div class="detail-row">
+                    <div class="detail-label">Student Name</div>
+                    <div class="detail-value" style="font-size: 1.2rem;">${student.full_name || "N/A"}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Email</div>
+                    <div class="detail-value">${student.email || "N/A"}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Phone</div>
+                    <div class="detail-value">${student.phone || "N/A"}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Member Since</div>
+                    <div class="detail-value">${student.created_at ? new Date(student.created_at).toLocaleDateString() : "-"}</div>
+                </div>
+            </div>
         </div>
 
-        <div class="profile-details">
-          <div class="detail-row">
-            <div class="detail-label">Student ID:</div>
-            <div class="detail-value">${student.id}</div>
-          </div>
+        <div class="books-list">
+            <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-book-reader" style="color: var(--primary);"></i> Borrowed Books
+            </h3>
 
-          <div class="detail-row">
-            <div class="detail-label">Full Name:</div>
-            <div class="detail-value">${student.full_name || ""}</div>
-          </div>
-
-          <div class="detail-row">
-            <div class="detail-label">Email:</div>
-            <div class="detail-value">${student.email || ""}</div>
-          </div>
-
-          <div class="detail-row">
-            <div class="detail-label">Phone:</div>
-            <div class="detail-value">${student.phone || ""}</div>
-          </div>
-
-          <div class="detail-row">
-            <div class="detail-label">Registration Date:</div>
-            <div class="detail-value">
-              ${
-                student.created_at
-                  ? new Date(student.created_at).toLocaleDateString()
-                  : "-"
-              }
-            </div>
-          </div>
+            ${sampleBooks.length > 0 ? sampleBooks.map(book => `
+                <div class="book-item">
+                    <div style="flex: 1;">
+                        <div class="book-title">${book.title}</div>
+                        <div style="color: #90a4ae; font-size: 0.9rem;">
+                            <i class="fas fa-pen-nib" style="font-size: 0.8rem;"></i> ${book.author}
+                        </div>
+                    </div>
+                    <div style="text-align: right; min-width: 120px;">
+                        <div class="book-due">Due: ${book.dueDate}</div>
+                        ${book.fine > 0 
+                            ? `<div style="color: var(--error); font-weight: 600; font-size: 0.9rem; margin-top: 4px;">
+                                <i class="fas fa-exclamation-triangle"></i> Fine: ₹${book.fine}
+                               </div>` 
+                            : `<div style="color: var(--success); font-size: 0.85rem; margin-top: 4px;">
+                                <i class="fas fa-check"></i> No Fine
+                               </div>`
+                        }
+                    </div>
+                </div>
+            `).join('') : `
+                <div style="text-align: center; padding: 30px; background: #fafafa; border-radius: 8px; color: #90a4ae;">
+                    <i class="fas fa-books" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                    No books currently borrowed.
+                </div>
+            `}
         </div>
-      </div>
-
-      <div class="books-list">
-        <h3>Borrowed Books</h3>
-
-        ${
-          sampleBooks.length > 0
-            ? sampleBooks
-                .map(
-                  (book) => `
-          <div class="book-item">
-            <div>
-              <div class="book-title">${book.title}</div>
-              <div style="color: #7f8c8d; font-size: 0.9rem;">by ${
-                book.author
-              }</div>
-            </div>
-            <div>
-              <div class="book-due">Due: ${book.dueDate}</div>
-              <div style="color: ${
-                book.fine > 0 ? "#e74c3c" : "#27ae60"
-              }; font-weight: 500;">
-                Fine: ₹${book.fine}
-              </div>
-            </div>
-          </div>
-        `
-                )
-                .join("")
-            : '<p style="text-align: center; padding: 20px; color: #7f8c8d;">No books currently borrowed.</p>'
-        }
-      </div>
-
-      <div class="flex-buttons">
-        <button class="btn" id="logoutBtn">Logout</button>
-      </div>
+        
+        <div class="flex-buttons" style="margin-top: 30px;">
+            <button class="btn btn-secondary" onclick="handleLogout()" style="width: 100%;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
     `;
 
-    document.getElementById("profileContent").innerHTML = profileHTML;
+    contentDiv.innerHTML = profileHTML;
+}
 
-    // Logout button
-    document.getElementById("logoutBtn").addEventListener("click", async () => {
-      localStorage.removeItem("currentStudent");
-      await supabase.auth.signOut();
-      showPage("home");
+// Global Logout Handler
+window.handleLogout = async function() {
+    if(confirm("Are you sure you want to logout?")) {
+        localStorage.removeItem("currentStudent");
+        await supabase.auth.signOut();
+        showPage("home");
+        showMessage("loginMessage", "Logged out successfully.", "success"); // Show on login/home page if needed
+    }
+};
 
-      document.getElementById("profileContent").innerHTML = `
-        <div style="text-align: center; padding: 40px 0;">
-          <i class="fas fa-user-circle" style="font-size: 5rem; color: #bdc3c7;"></i>
-          <p style="margin-top: 20px; color: #7f8c8d;">Please login to view your profile</p>
-          <button class="btn" id="goToLoginFromProfile">Go to Login</button>
-        </div>
-      `;
-      document
-        .getElementById("goToLoginFromProfile")
-        .addEventListener("click", () => showPage("login"));
-    });
-  }
+// ================== INITIALIZATION ==================
+window.addEventListener("DOMContentLoaded", async function () {
+    // Check for existing session silently
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (session) {
+        // If session exists, try to get student data
+        const { data: student } = await supabase
+            .from("students")
+            .select("*")
+            .eq("id", session.user.id)
+            .single();
 
-  // ================== MESSAGE HELPER ==================
-  function showMessage(elementId, message, type) {
-    const messageElement = document.getElementById(elementId);
-    messageElement.textContent = message;
-    messageElement.className = `message ${type}`;
-    messageElement.style.display = "block";
-
-    setTimeout(() => {
-      messageElement.style.display = "none";
-    }, 5000);
-  }
-
-  // ================== ON PAGE LOAD ==================
-  window.addEventListener("DOMContentLoaded", async function () {
-    // check existing session
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (user) {
-      // get student from DB
-      const { data: student } = await supabase
-        .from("students")
-        .select("*")
-        .eq("id", user.id)
-        .single();
-
-      if (student) {
-        localStorage.setItem("currentStudent", JSON.stringify(student));
-        showPage("profile");
-        loadProfile();
-        return;
-      }
+        if (student) {
+            localStorage.setItem("currentStudent", JSON.stringify(student));
+        }
+    } else {
+        localStorage.removeItem("currentStudent");
     }
 
-    // default: show home
+    // Default to Home page
     showPage("home");
-  });
+});
