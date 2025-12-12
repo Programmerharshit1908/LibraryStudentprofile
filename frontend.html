@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shiva Study Point Library</title>
+    <title>Shiva Study Point | Garg Library</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="frontend.css">
 </head>
 <body>
+
     <header>
         <div class="container header-content">
             <div class="logo">
-                <i class="fas fa-book-open"></i>
-                <h1>Shiva Study Point<span>(Garg library)</span></h1>
-            </br>
-                <h4><span>dir.</span>Dwarika Prasad Garg</h4>
-        </br>
-                <h5>+917828629003</h5>
+                <i class="fas fa-book-reader"></i>
+                <h1>Shiva Study Point <span>(Garg Library)</span></h1>
+                <h4><span>Dir.</span> Dwarika Prasad Garg</h4>
+                <h5><i class="fas fa-phone-alt" style="font-size: 0.7rem; margin-right: 5px;"></i> +91 78286 29003</h5>
             </div>
+
             <nav>
                 <ul>
-                    <li><a href="#" class="nav-link active" data-page="home">Home</a></li>
+                    <li><a href="#" class="nav-link active" data-page="home"><i class="fas fa-home"></i> Home</a></li>
                     <li><a href="#" class="nav-link" data-page="register">Register</a></li>
                     <li><a href="#" class="nav-link" data-page="login">Login</a></li>
                     <li><a href="#" class="nav-link" data-page="profile">Profile</a></li>
@@ -29,137 +29,155 @@
         </div>
     </header>
     
-    <div class="container">
-        <!-- Home Page -->
+    <div class="container main-wrapper">
+        
         <div class="page active" id="home">
-            <h2>Welcome to Garg Library Management System</h2>
-            <p>This system allows students to register, login, and view their library profile including borrowed books and account details.</p>
+            <div style="text-align: center; margin-bottom: 40px;">
+                <h2 style="border:none; margin-bottom: 10px;">Welcome to Garg Library</h2>
+                <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">
+                    Manage your reading journey efficiently. View borrowed books, track due dates, and manage your student profile in one place.
+                </p>
+            </div>
             
             <div class="login-options">
-                <div class="login-option">
-                    <i class="fas fa-user-plus"></i>
+                <div class="login-option" id="cardNewStudent">
+                    <i class="fas fa-user-graduate"></i>
                     <h3>New Student</h3>
-                    <p>Register as a new student to access library services</p>
+                    <p>Join our library! Register now to get your unique ID and start borrowing books.</p>
                     <button class="btn" id="goToRegister">Register Now</button>
                 </div>
-                <div class="login-option">
-                    <i class="fas fa-sign-in-alt"></i>
-                    <h3>Existing Student</h3>
-                    <p>Login to your account to view your profile and borrowed books</p>
-                    <button class="btn" id="goToLogin">Login Now</button>
+                
+                <div class="login-option" id="cardExistingStudent">
+                    <i class="fas fa-id-card"></i>
+                    <h3>Student Login</h3>
+                    <p>Already a member? Sign in to check your fines, due dates, and history.</p>
+                    <button class="btn btn-secondary" id="goToLogin">Login to Dashboard</button>
                 </div>
             </div>
             
-            <div style="margin-top: 40px;">
-                <h3>Features:</h3>
-                <ul style="list-style-type: none; margin-top: 15px;">
-                    <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #2ecc71;"></i> Student Registration with unique ID</li>
-                    <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #2ecc71;"></i> Secure Login System</li>
-                    <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #2ecc71;"></i> Student Profile Management</li>
-                    <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #2ecc71;"></i> Track Borrowed Books</li>
-                    <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #2ecc71;"></i> View Due Dates and Fines</li>
-                </ul>
+            <div class="features-section" style="margin-top: 60px;">
+                <h3 style="text-align: center; margin-bottom: 30px;">Library Services</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div style="background: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: var(--shadow-sm);">
+                        <i class="fas fa-check-circle" style="color: var(--success); font-size: 2rem; margin-bottom: 10px;"></i>
+                        <p>Instant Registration</p>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: var(--shadow-sm);">
+                        <i class="fas fa-book" style="color: var(--primary); font-size: 2rem; margin-bottom: 10px;"></i>
+                        <p>Live Book Tracking</p>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: var(--shadow-sm);">
+                        <i class="fas fa-clock" style="color: var(--warning); font-size: 2rem; margin-bottom: 10px;"></i>
+                        <p>Due Date Alerts</p>
+                    </div>
+                </div>
             </div>
         </div>
         
-        <!-- Registration Page -->
         <div class="page" id="register">
-            <h2>Student Registration</h2>
+            <h2><i class="fas fa-user-plus"></i> Student Registration</h2>
             <div class="message" id="registerMessage"></div>
             
             <div class="form-container">
                 <form id="registrationForm">
                     <div class="form-group">
                         <label for="fullName">Full Name</label>
-                        <input type="text" id="fullName" required placeholder="Enter your full name">
+                        <input type="text" id="fullName" required placeholder="e.g. Rahul Kumar">
                     </div>
                     
                     <div class="form-group">
                         <label for="email">Email Address</label>
-                        <input type="email" id="email" required placeholder="Enter your email">
+                        <input type="email" id="email" required placeholder="student@example.com">
                     </div>
                     
                     <div class="form-group">
                         <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" required placeholder="Enter your phone number">
+                        <input type="tel" id="phone" required placeholder="10-digit mobile number">
                     </div>
                    
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" id="password" required placeholder="Create a password">
+                        <input type="password" id="password" required placeholder="Create a strong password">
                     </div>
                     
                     <div class="form-group">
                         <label for="confirmPassword">Confirm Password</label>
-                        <input type="password" id="confirmPassword" required placeholder="Confirm your password">
+                        <input type="password" id="confirmPassword" required placeholder="Repeat password">
                     </div>
                     
                     <div class="flex-buttons">
-                        <button type="submit" class="btn">Register</button>
-                        <button type="button" class="btn btn-secondary" id="backFromRegister">Back to Home</button>
+                        <button type="submit" class="btn" id="btnRegisterSubmit">
+                            <span>Register</span>
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="backFromRegister">Cancel</button>
                     </div>
                 </form>
             </div>
         </div>
         
-        <!-- Login Page -->
         <div class="page" id="login">
-            <h2>Student Login</h2>
+            <h2><i class="fas fa-sign-in-alt"></i> Student Login</h2>
             <div class="message" id="loginMessage"></div>
             
             <div class="form-container">
                 <form id="loginForm">
                     <div class="form-group">
                         <label for="loginEmail">Email Address</label>
-                        <input type="email" id="loginEmail" required placeholder="Enter your registered email">
+                        <input type="email" id="loginEmail" required placeholder="Your registered email">
                     </div>
                     
                     <div class="form-group">
                         <label for="loginPassword">Password</label>
-                        <input type="password" id="loginPassword" required placeholder="Enter your password">
+                        <input type="password" id="loginPassword" required placeholder="Your password">
                     </div>
                     
                     <div class="flex-buttons">
-                        <button type="submit" class="btn">Login</button>
-                        <button type="button" class="btn btn-secondary" id="backFromLogin">Back to Home</button>
+                        <button type="submit" class="btn" id="btnLoginSubmit">
+                            <span>Login</span>
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="backFromLogin">Back</button>
                     </div>
                 </form>
             </div>
         </div>
         
-        <!-- Profile Page -->
         <div class="page" id="profile">
-            <h2>Student Profile</h2>
+            <div id="profileHeader" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--bg-body); padding-bottom: 15px; margin-bottom: 20px;">
+                <h2>My Dashboard</h2>
+                <button class="btn btn-secondary" id="logoutBtnTop" style="padding: 8px 16px; font-size: 0.8rem;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+            
             <div class="message" id="profileMessage"></div>
             
             <div id="profileContent">
-                <!-- Profile content will be loaded here after login -->
-                <div style="text-align: center; padding: 40px 0;">
-                    <i class="fas fa-user-circle" style="font-size: 5rem; color: #bdc3c7;"></i>
-                    <p style="margin-top: 20px; color: #7f8c8d;">Please login to view your profile</p>
-                    <button class="btn" id="goToLoginFromProfile">Go to Login</button>
+                <div style="text-align: center; padding: 60px 20px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--primary);"></i>
+                    <p style="margin-top: 20px;">Loading profile...</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!--footer-->
     <footer>
         <div class="container">
-            <p>Garg Library Management &copy; 2025 | Student Module</p>
-            <p style="margin-top: 5px; font-size: 0.9rem;">Designed for Shiva Study Point library management</p>
+            <p><strong>Shiva Study Point</strong> (Garg Library)</p>
+            <p style="margin-top: 5px; opacity: 0.8; font-size: 0.85rem;">
+                Managed by Dir. Dwarika Prasad Garg | &copy; 2025
+            </p>
         </div>
     </footer>
     
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  const SUPABASE_URL = "https://svayhmhtwmbqybkpmusm.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2YXlobWh0d21icXlia3BtdXNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNTk5MDYsImV4cCI6MjA4MDkzNTkwNn0.lWKplbEJB3mxLNSG7MeYpb1Ui9Fi5WPxDKfNmU3oP6A";
-
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-</script>
-
-<script src="frontend.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Supabase Configuration
+        const SUPABASE_URL = "https://svayhmhtwmbqybkpmusm.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2YXlobWh0d21icXlia3BtdXNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNTk5MDYsImV4cCI6MjA4MDkzNTkwNn0.lWKplbEJB3mxLNSG7MeYpb1Ui9Fi5WPxDKfNmU3oP6A";
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+    <script src="frontend.js"></script>
 
 </body>
 </html>
